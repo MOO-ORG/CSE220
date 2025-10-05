@@ -1,2 +1,47 @@
-.DS_Store
+# Compiled C files
+*.o
+*.obj
+*.exe
+*.out
+*.a
+*.so
+*.dll
+
+# # C debugging files
+# *.dSYM/
+# *.su
+# *.idb
+# *.pdb
+
+# Java compiled classes
 *.class
+
+# # Java packages
+# *.jar
+# *.war
+# *.nar
+# *.ear
+# *.zip
+# *.tar.gz
+# *.rar
+
+# Java build directories
+# target/
+# build/
+# bin/
+
+# IDE files
+# .vscode/
+# .idea/
+# *.swp
+# *.swo
+# *~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
