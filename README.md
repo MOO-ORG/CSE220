@@ -3,7 +3,7 @@
 
 <div align="center">
 
-[![Visitors](https://api.visitorbadge.io/api/visitors?path=MostofaMorshedSayeem%2FCSE111&label=Visitors&countColor=%23FF6B6B&style=for-the-badge)](https://visitorbadge.io/status?path=MostofaMorshedSayeem%2FCSE111)
+[![Visitors](https://api.visitorbadge.io/api/visitors?path=smmmsmo%2FCSE220&label=Visitors&countColor=%23FF6B6B&style=for-the-badge)](https://visitorbadge.io/status?path=smmmsmo%2FCSE220)
 
 [![Course](https://img.shields.io/badge/Course-CSE220-4A90E2?style=for-the-badge&logoColor=white)](https://github.com/MostofaMorshedSayeem/CSE220)
 
