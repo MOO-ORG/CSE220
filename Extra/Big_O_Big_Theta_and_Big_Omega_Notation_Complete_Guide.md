@@ -167,9 +167,9 @@ Runtime
    |    /
    |   /
    |  /    Θ(n²) - Actual behavior (tight bound)
-   | /
-   |/      Ω(n) - Lower bound (best case)
-   |
+   | /   /
+   |/  /      Ω(n) - Lower bound (best case)
+   | /     w /
    +----------> Input size (n)
    0
 
