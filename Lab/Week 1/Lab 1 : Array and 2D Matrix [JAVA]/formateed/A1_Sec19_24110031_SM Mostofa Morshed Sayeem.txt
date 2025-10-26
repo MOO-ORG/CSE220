@@ -1,0 +1,226 @@
+|````````````````````|
+|                    |
+|       Task 1       |
+|                    |
+``````````````````````
+
+
+    public static Integer rowRotation(Integer examWeek, String[][] matrix) {
+
+        // For this task you don't need to create new Matrix
+        // You can create 1D array if you need (but you can do it without creating any
+        // 1D array as well)
+        // After rotation the Matrix should be printed inside the method
+        // Only the integer row number is to be returned
+
+        int rows = matrix.length;
+        int cols = matrix[0].length;
+
+        int rot = rows - examWeek;
+
+        for (int w = 1; w < rot; w++) {
+            String[] lastRow = matrix[rows - 1]; // store last row
+            // Shift all rows down by one
+            for (int i = rows - 1; i > 0; i--) {
+                matrix[i] = matrix[i - 1];
+            }
+            matrix[0] = lastRow; // Put the last row at the top
+        }
+
+        Arr.print2D(matrix);
+
+        // Find "AA"
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                if ("AA".equals(matrix[i][j])) {
+                    return i + 1; // 1-indexed row number
+                }
+            }
+        }
+
+        return null;
+    }
+
+
+
+================================================================================================================================================================
+
+
+|````````````````````|
+|                    |
+|       Task 2       |
+|                    |
+``````````````````````
+
+
+    public static Integer[][] compressMatrix(Integer[][] matrix) {
+
+        int rows = matrix.length;
+        int cols = matrix[0].length;
+
+        int newNumRows = rows / 2;
+        int newNumCols = cols / 2;
+
+        Integer[][] compressedMatrix = new Integer[newNumRows][newNumCols];
+
+        for (int i = 0; i < newNumRows; i++) {
+            for (int j = 0; j < newNumCols; j++) {
+
+                int r = 2 * i;
+                int c = 2 * j;
+                int sum = matrix[r][c] + matrix[r][c + 1] + matrix[r + 1][c] + matrix[r + 1][c + 1];
+                compressedMatrix[i][j] = sum;
+            }
+        }
+        return compressedMatrix;
+    }
+
+
+================================================================================================================================================================
+
+
+|````````````````````|
+|                    |
+|       Task 3       |
+|                    |
+``````````````````````
+
+
+   public static void playGame(Integer[][] arena) {
+
+        int totalPoints = 0;
+        int rows = arena.length;
+        int cols = arena[0].length;
+
+
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                // Check if current cell contains a player (multiple of 50 and greater than 0)
+                if (arena[i][j] != null && arena[i][j] > 0 && arena[i][j] % 50 == 0) {
+                    int pp = 0;
+
+                    // Check cell above
+                    if (i - 1 >= 0 && arena[i - 1][j] != null && arena[i - 1][j] == 2) {
+                        pp++;
+                    }
+
+                    // Check cell below
+                    if (i + 1 < rows && arena[i + 1][j] != null && arena[i + 1][j] == 2) {
+                        pp++;
+                    }
+
+                    // Check cell to the left
+                    if (j - 1 >= 0 && arena[i][j - 1] != null && arena[i][j - 1] == 2) {
+                        pp++;
+                    }
+
+                    // Check cell to the right
+                    if (j + 1 < cols && arena[i][j + 1] != null && arena[i][j + 1] == 2) {
+                        pp++;
+                    }
+
+                    // Each cell with 2 gives 2 points
+                    totalPoints += pp * 2;
+                }
+            }
+        }
+
+        // Print the result
+        System.out.print("Points Gained: " + totalPoints + ". ");
+        if (totalPoints >= 10) {
+            System.out.print("Your team has survived the game.");
+        } else {
+            System.out.print("Your team is out.");
+        }
+        // System.out.println();
+
+    }
+
+
+
+
+================================================================================================================================================================
+
+
+|````````````````````|
+|                    |
+|       Task 4       |
+|                    |
+``````````````````````
+
+    public static void rotateSecret(Character[][] board) {
+
+        int n = board.length;
+        int numLayers = n / 2; // number of square "rings"
+
+        for (int currentLayer = 0; currentLayer < numLayers; currentLayer++) {
+            int start = currentLayer;
+            int end = n - 1 - currentLayer;
+            int len = end - start;
+            if (len <= 0) {
+                continue;
+            }
+
+            int perimeter = 4 * len; // number of cells around this ring
+            int times = (numLayers - currentLayer) % perimeter; 
+            if (times == 0) {
+                continue;
+            }
+
+            char[] ring = new char[perimeter];
+            int idx = 0;
+
+            // top row (left -> right)
+            for (int j = start; j < end; j++) {
+                ring[idx++] = board[start][j];
+            }
+            // right column (top -> bottom)
+            for (int i = start; i < end; i++) {
+                ring[idx++] = board[i][end];
+            }
+            // bottom row (right -> left)
+            for (int j = end; j > start; j--) {
+                ring[idx++] = board[end][j];
+            }
+            // left column (bottom -> top)
+            for (int i = end; i > start; i--) {
+                ring[idx++] = board[i][start];
+            }
+
+            char[] rotated = new char[perimeter];
+            for (int k = 0; k < perimeter; k++) {
+                rotated[(k + times) % perimeter] = ring[k];
+            }
+
+            // Write back to the board in the same traversal order
+            idx = 0;
+            // top row (left -> right)
+            for (int j = start; j < end; j++) {
+                board[start][j] = rotated[idx++];
+            }
+            // right column (top -> bottom)
+            for (int i = start; i < end; i++) {
+                board[i][end] = rotated[idx++];
+            }
+            // bottom row (right -> left)
+            for (int j = end; j > start; j--) {
+                board[end][j] = rotated[idx++];
+            }
+            // left column (bottom -> top)
+            for (int i = end; i > start; i--) {
+                board[i][start] = rotated[idx++];
+            }
+        }
+
+        // Print (row-wise)
+        String message = "";
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                message = message + board[i][j];
+            }
+        }
+        System.out.println(message);
+    }
+
+
+================================================================================================================================================================
