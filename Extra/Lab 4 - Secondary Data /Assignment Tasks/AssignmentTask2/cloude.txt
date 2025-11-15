@@ -1,0 +1,270 @@
+public class StackAndQueueAssgnTaskTester {
+
+    // Main evaluation method
+    public static void evalMathExpression(String expression) {
+        // Validate balanced parentheses
+        if (!isBalanced(expression)) {
+            printString("Invalid Expression");
+            return;
+        }
+        
+        // Convert infix to postfix
+        char[] postfix = infixToPostfix(expression);
+        
+        // Evaluate postfix
+        int result = evaluatePostfix(postfix);
+        
+        printString("Postfix: ");
+        printCharArray(postfix);
+        printString("\nResult: ");
+        printInt(result);
+        printString("\n");
+    }
+    
+    // Check if parentheses are balanced
+    private static boolean isBalanced(String expression) {
+        Stack stack = new Stack();
+        char[] chars = expression.toCharArray();
+        
+        for (int i = 0; i < chars.length; i++) {
+            char ch = chars[i];
+            if (ch == '(' || ch == '[' || ch == '{') {
+                stack.push(ch);
+            } else if (ch == ')' || ch == ']' || ch == '}') {
+                if (stack.isEmpty()) {
+                    return false;
+                }
+                char top = (char) stack.pop();
+                if ((ch == ')' && top != '(') || 
+                    (ch == ']' && top != '[') || 
+                    (ch == '}' && top != '{')) {
+                    return false;
+                }
+            }
+        }
+        return stack.isEmpty();
+    }
+    
+    // Get precedence of operators
+    private static int precedence(char op) {
+        if (op == '^') return 3;
+        if (op == '*' || op == '/') return 2;
+        if (op == '+' || op == '-') return 1;
+        return 0;
+    }
+    
+    // Convert infix to postfix notation
+    private static char[] infixToPostfix(String expression) {
+        Stack stack = new Stack();
+        char[] expr = expression.toCharArray();
+        char[] postfix = new char[expr.length * 2];
+        int postfixIndex = 0;
+        
+        for (int i = 0; i < expr.length; i++) {
+            char ch = expr[i];
+            
+            if (ch == ' ') {
+                continue;
+            }
+            
+            if (isDigit(ch)) {
+                while (i < expr.length && isDigit(expr[i])) {
+                    postfix[postfixIndex] = expr[i];
+                    postfixIndex++;
+                    i++;
+                }
+                i--;
+                postfix[postfixIndex] = ' ';
+                postfixIndex++;
+            } else if (ch == '(' || ch == '[' || ch == '{') {
+                stack.push(ch);
+            } else if (ch == ')' || ch == ']' || ch == '}') {
+                char open = (ch == ')') ? '(' : (ch == ']') ? '[' : '{';
+                while (!stack.isEmpty() && (char) stack.peek() != open) {
+                    postfix[postfixIndex] = (char) stack.pop();
+                    postfixIndex++;
+                    postfix[postfixIndex] = ' ';
+                    postfixIndex++;
+                }
+                if (!stack.isEmpty()) {
+                    stack.pop();
+                }
+            } else if (ch == '+' || ch == '-' || ch == '*' || ch == '/' || ch == '^') {
+                while (!stack.isEmpty() && 
+                       precedence((char) stack.peek()) >= precedence(ch) && 
+                       ch != '^') {
+                    postfix[postfixIndex] = (char) stack.pop();
+                    postfixIndex++;
+                    postfix[postfixIndex] = ' ';
+                    postfixIndex++;
+                }
+                stack.push(ch);
+            }
+        }
+        
+        while (!stack.isEmpty()) {
+            postfix[postfixIndex] = (char) stack.pop();
+            postfixIndex++;
+            postfix[postfixIndex] = ' ';
+            postfixIndex++;
+        }
+        
+        return trimCharArray(postfix, postfixIndex);
+    }
+    
+    // Evaluate postfix expression
+    private static int evaluatePostfix(char[] postfix) {
+        Stack stack = new Stack();
+        
+        int i = 0;
+        while (i < postfix.length) {
+            char ch = postfix[i];
+            
+            if (ch == ' ') {
+                i++;
+                continue;
+            }
+            
+            if (isDigit(ch)) {
+                int num = 0;
+                while (i < postfix.length && isDigit(postfix[i])) {
+                    num = num * 10 + (postfix[i] - '0');
+                    i++;
+                }
+                stack.push(num);
+            } else {
+                int b = (int) stack.pop();
+                int a = (int) stack.pop();
+                int result = 0;
+                
+                if (ch == '+') result = a + b;
+                else if (ch == '-') result = a - b;
+                else if (ch == '*') result = a * b;
+                else if (ch == '/') result = a / b;
+                else if (ch == '^') result = power(a, b);
+                
+                stack.push(result);
+                i++;
+            }
+        }
+        
+        return (int) stack.pop();
+    }
+    
+    // Helper: Check if character is a digit
+    private static boolean isDigit(char c) {
+        return c >= '0' && c <= '9';
+    }
+    
+    // Helper: Trim char array to actual size
+    private static char[] trimCharArray(char[] arr, int size) {
+        // Remove trailing space if exists
+        if (size > 0 && arr[size - 1] == ' ') {
+            size--;
+        }
+        
+        char[] result = new char[size];
+        for (int i = 0; i < size; i++) {
+            result[i] = arr[i];
+        }
+        return result;
+    }
+    
+    // Helper: Calculate power
+    private static int power(int base, int exp) {
+        if (exp == 0) return 1;
+        int result = 1;
+        for (int i = 0; i < exp; i++) {
+            result = result * base;
+        }
+        return result;
+    }
+    
+    // Helper: Print string
+    private static void printString(String s) {
+        System.out.print(s);
+    }
+    
+    // Helper: Print char array
+    private static void printCharArray(char[] arr) {
+        for (int i = 0; i < arr.length; i++) {
+            System.out.print(arr[i]);
+        }
+    }
+    
+    // Helper: Print integer
+    private static void printInt(int num) {
+        if (num < 0) {
+            System.out.print('-');
+            num = -num;
+        }
+        
+        if (num == 0) {
+            System.out.print('0');
+            return;
+        }
+        
+        char[] digits = new char[20];
+        int index = 0;
+        
+        while (num > 0) {
+            digits[index] = (char) ('0' + (num % 10));
+            num = num / 10;
+            index++;
+        }
+        
+        for (int i = index - 1; i >= 0; i--) {
+            System.out.print(digits[i]);
+        }
+    }
+
+    // DO NOT CHANGE ANYTHING IN THE DRIVER CODE
+    public static void main(String[] args) {
+        
+        System.out.println("================ Test 01 ================");
+
+        System.out.println("This should print:");
+        System.out.println("Postfix: 3 5 2 8 - * +\nResult: -27");
+        System.out.println("-----------------------------------------");
+        System.out.println("Your Output:");
+        evalMathExpression("3 + 5 * (2 - 8)");
+        System.out.println("=========================================");
+
+        System.out.println("================ Test 02 ================");
+
+        System.out.println("This should print:");
+        System.out.println("Invalid Expression");
+        System.out.println("-----------------------------------------");
+        System.out.println("Your Output:");
+        evalMathExpression("(2 + 3)) * ((4 - 1)");
+        System.out.println("=========================================");
+
+        System.out.println("================ Test 03 ================");
+
+        System.out.println("This should print:");
+        System.out.println("Postfix: 7 6 5 2 ^ * 3 + + 4 2 / -\nResult: 158");
+        System.out.println("-----------------------------------------");
+        System.out.println("Your Output:");
+        evalMathExpression("7 + (6 * 5^2 + 3) - (4 / 2)");
+        System.out.println("=========================================");
+
+        System.out.println("================ Test 04 ================");
+
+        System.out.println("This should print:");
+        System.out.println("Postfix: 10 2 + 6 * 3 /\nResult: 24");
+        System.out.println("-----------------------------------------");
+        System.out.println("Your Output:");
+        evalMathExpression("(10 + 2) * 6 / 3");
+        System.out.println("=========================================");
+
+        System.out.println("================ Test 05 ================");
+
+        System.out.println("This should print:");
+        System.out.println("Invalid Expression");
+        System.out.println("-----------------------------------------");
+        System.out.println("Your Output:");
+        evalMathExpression("[2 + 3) * (4 - (5 * 6))]");
+        System.out.println("=========================================");
+
+    }
+}
